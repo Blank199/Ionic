@@ -10,9 +10,9 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/react';
-import { ItemContext } from './ItemProvider';
+import { ItemContext } from './ProductProvider';
 import { RouteComponentProps } from 'react-router';
-import { ItemProps } from './ItemProps';
+import { ItemProps } from './ProductProps';
 
 
 

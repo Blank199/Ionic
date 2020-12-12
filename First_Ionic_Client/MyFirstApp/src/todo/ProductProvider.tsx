@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import { ItemProps } from './ItemProps';
-import { createItem, getItems, newWebSocket, updateItem } from './itemApi';
+import { ItemProps } from './ProductProps';
+import { createItem, getItems, newWebSocket, updateItem } from './ProductApi';
 
 type SaveItemFn = (item: ItemProps, items: ItemProps[]) => Promise<any>;
 

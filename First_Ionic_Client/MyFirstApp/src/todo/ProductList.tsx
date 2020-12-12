@@ -12,8 +12,8 @@ import {
   IonToolbar
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import Item from './Item';
-import { ItemContext } from './ItemProvider';
+import Item from './Product';
+import { ItemContext } from './ProductProvider';
 
 
 

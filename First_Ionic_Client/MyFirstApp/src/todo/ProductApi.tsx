@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getLogger } from '../core';
-import { ItemProps } from './ItemProps';
+import { ItemProps } from './ProductProps';
 
 const log = getLogger('itemApi');
 
