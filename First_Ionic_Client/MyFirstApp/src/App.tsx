@@ -23,7 +23,6 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { ItemProvider } from './todo/ProductProvider';
-import { Spinner } from './todo/MySpinner';
 
 const App: React.FC = () => (
   <IonApp>
@@ -33,7 +32,6 @@ const App: React.FC = () => (
           <Route path="/products" component={ItemList} exact={true} />
           <Route path="/product" component={ItemEdit} exact={true} />
           <Route path="/products/:id" component={ItemEdit} exact={true} />
-          <Route path="/test" component={Spinner} exact={true} />
           <Route exact path="/" render={() => <Redirect to="/products" />} />
         </IonRouterOutlet>
       </IonReactRouter>

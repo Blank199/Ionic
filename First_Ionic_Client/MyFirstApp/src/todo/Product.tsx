@@ -1,8 +1,8 @@
 import React from 'react';
 import { IonItem, IonLabel } from '@ionic/react';
-import { ItemProps } from './ProductProps';
+import { ProductProps } from './ProductProps';
 
-interface ItemPropsExt extends ItemProps {
+interface ItemPropsExt extends ProductProps {
   onEdit: (id?: string) => void;
 }
 

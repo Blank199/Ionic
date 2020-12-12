@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import { ItemProps } from './ProductProps';
+import { ProductProps } from './ProductProps';
 import { createItem, getItems, newWebSocket, updateItem } from './ProductApi';
 
-type SaveItemFn = (item: ItemProps, items: ItemProps[]) => Promise<any>;
+type SaveItemFn = (item: ProductProps, items: ProductProps[]) => Promise<any>;
 
 export interface ItemsState {
-  items?: ItemProps[],
+  items?: ProductProps[],
   fetching: boolean,
   fetchingError?: Error | null,
   saving: boolean,
@@ -100,7 +100,7 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
     }
   }
 
-  async function saveItemCallback(item: ItemProps, items: ItemProps[]) {
+  async function saveItemCallback(item: ProductProps, items: ProductProps[]) {
     try {
       dispatch({ type: SAVE_ITEM_STARTED });
       let savedItem;  

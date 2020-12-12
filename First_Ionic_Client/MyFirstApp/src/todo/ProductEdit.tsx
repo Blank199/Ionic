@@ -12,7 +12,7 @@ import {
 } from '@ionic/react';
 import { ItemContext } from './ProductProvider';
 import { RouteComponentProps } from 'react-router';
-import { ItemProps } from './ProductProps';
+import { ProductProps } from './ProductProps';
 
 
 
@@ -25,7 +25,7 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
-  const [item, setItem] = useState<ItemProps>();
+  const [item, setItem] = useState<ProductProps>();
   useEffect(() => {
     const routeId = match.params.id || '';
     const item = items?.find(it => it.id?.toString() === routeId);

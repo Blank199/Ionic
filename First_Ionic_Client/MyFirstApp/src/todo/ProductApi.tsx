@@ -1,8 +1,6 @@
 import axios from 'axios';
-import { getLogger } from '../core';
-import { ItemProps } from './ProductProps';
-
-const log = getLogger('itemApi');
+import { ProductProps } from './ProductProps';
+import { io } from 'socket.io-client';
 
 const baseUrl = 'localhost:5000/api/v1';
 const itemUrl = `http://${baseUrl}/products`;
@@ -14,7 +12,7 @@ const config = {
   }
 };
 
-export const getItems: () => Promise<ItemProps[]> = () => {
+export const getItems: () => Promise<ProductProps[]> = () => {
   return axios
         .get(`${itemUrl}`, config)
         .then(res => {
@@ -25,7 +23,7 @@ export const getItems: () => Promise<ItemProps[]> = () => {
         });
 }
 
-export const createItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
+export const createItem: (item: ProductProps) => Promise<ProductProps[]> = item => {
   return axios
   .post(`${itemUrl}`,item, config)
   .then(res => {
@@ -36,7 +34,7 @@ export const createItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
   });
 }
 
-export const updateItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
+export const updateItem: (item: ProductProps) => Promise<ProductProps[]> = item => {
   return axios
   .put(`${itemUrl}`,item, config)
   .then(res => {
@@ -50,26 +48,19 @@ export const updateItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
 interface MessageData {
   event: string;
   payload: {
-    item: ItemProps;
+    item: ProductProps;
   };
 }
 
-export const newWebSocket = (onMessage: (data: MessageData) => void) => {
-  const ws = new WebSocket(`ws://${baseUrl}/products`)
-  ws.onopen = () => {
-    log('web socket onopen');
-  };
-  ws.onclose = () => {
-    log('web socket onclose');
-  };
-  ws.onerror = error => {
-    log('web socket onerror', error);
-  };
-  ws.onmessage = messageEvent => {
-    log('web socket onmessage');
-    onMessage(JSON.parse(messageEvent.data));
-  };
+
+export const newWebSocket = (onmessage: (data: MessageData) => void) => {
+  const socket = io('ws://localhost:5000/api/v1');
+
+  socket.on('connected', () => {
+      console.info("socketio connected");
+  });
+
   return () => {
-    ws.close();
+      socket.close();
   }
 }
