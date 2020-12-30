@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
+import React, { useCallback, useContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { ItemProps } from './ProductProps';
 import { createItem, getItems, newWebSocket, updateItem } from './ProductApi';
+import { AuthContext } from '../Authentication/AuthProvider';
 
 type SaveItemFn = (item: ItemProps, items: ItemProps[]) => Promise<any>;
 
@@ -67,11 +68,12 @@ interface ItemProviderProps {
 }
 
 export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
+  const { token } = useContext(AuthContext);
   const [state, dispatch] = useReducer(reducer, initialState);
   const { items, fetching, fetchingError, saving, savingError } = state;
-  useEffect(getItemsEffect, []);
-  useEffect(wsEffect, []);
-  const saveItem = useCallback<SaveItemFn>(saveItemCallback, []);
+  useEffect(getItemsEffect, [token]);
+  useEffect(wsEffect, [token]);
+  const saveItem = useCallback<SaveItemFn>(saveItemCallback, [token]);
   const value = { items, fetching, fetchingError, saving, savingError, saveItem };
   
   return (
@@ -88,9 +90,13 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
     }
 
     async function fetchItems() {
+      if (!token?.trim()) {
+        console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+        return;
+      }
       try {
         dispatch({ type: FETCH_ITEMS_STARTED });
-        const items = await getItems();
+        const items = await getItems(token);
         if (!canceled) {
           dispatch({ type: FETCH_ITEMS_SUCCEEDED, payload: { items } });
         }
@@ -106,11 +112,11 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
       let savedItem;  
       
       if(item.id && items && +item.id === items.length + 1){
-        savedItem = await createItem(item)
+        savedItem = await createItem(token, item)
       }
       else{
         
-        savedItem = await updateItem(item)
+        savedItem = await updateItem(token, item)
       }
       dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item: savedItem} });
     } catch (error) {
@@ -120,18 +126,21 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
 
   function wsEffect() {
     let canceled = false;
-    const closeWebSocket = newWebSocket(message => {
-      if (canceled) {
-        return;
-      }
-      const { event, payload: { item }} = message;
-      if (event === 'created' || event === 'updated') {
-        dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
-      }
-    });
+    let closeWebSocket: () => void;
+    if (token?.trim()) {
+      closeWebSocket = newWebSocket(token, message => {
+        if (canceled) {
+          return;
+        }
+        const { type, payload: item } = message;
+        if (type === 'created' || type === 'updated') {
+          dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
+        }
+      });
+    }
     return () => {
       canceled = true;
-      closeWebSocket();
+      closeWebSocket?.();
     }
   }
 };

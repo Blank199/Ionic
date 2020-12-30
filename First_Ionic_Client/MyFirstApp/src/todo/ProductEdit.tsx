@@ -5,6 +5,7 @@ import {
   IonContent,
   IonHeader,
   IonInput,
+  IonLabel,
   IonLoading,
   IonPage,
   IonTitle,
@@ -57,8 +58,11 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        <IonLabel>Name:</IonLabel>
         <IonInput value={name} onIonChange={e => setName(e.detail.value || '')} />
+        <IonLabel>Price:</IonLabel>
         <IonInput value={price} onIonChange={e => setPrice(e.detail.value || '')} />
+        <IonLabel>Stock:</IonLabel>
         <IonInput value={stock} onIonChange={e => setStock(e.detail.value || '')} />
         <IonLoading isOpen={saving} />
         {savingError && (
