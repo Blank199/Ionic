@@ -7,8 +7,8 @@ import { authConfig, withLogs } from '../core';
 const baseUrl = 'localhost:5000/api/v1';
 const itemUrl = `http://${baseUrl}/products`;
 
-export const getItems: (token: string) => Promise<ItemProps[]> = token => {
-  return withLogs(axios.get(itemUrl, authConfig(token)), 'getItems');
+export const getItems: (token: string, limit: number, page: number) => Promise<ItemProps[]> = (token, limit, page) => {
+  return withLogs(axios.get(`${itemUrl}/${limit}/${page}`, authConfig(token)), 'getItems');
 }
 
 export const createItem: (token: string, item: ItemProps) => Promise<ItemProps[]> = (token, item) => {
