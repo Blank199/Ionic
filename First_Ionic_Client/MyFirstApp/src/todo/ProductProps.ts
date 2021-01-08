@@ -3,4 +3,5 @@ export interface ItemProps {
   name: string;
   price: string;
   stock: string;
+  imgName?: string|Promise<string>;
 }

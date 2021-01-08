@@ -1,4 +1,5 @@
 export const baseUrl = 'localhost:5000';
+export const basePhoneUrl = '192.168.100.4:5000';
 
 export interface ResponseProps<T> {
   data: T;
@@ -8,7 +9,7 @@ export function withLogs<T>(promise: Promise<ResponseProps<T>>, fnName: string):
     console.log(fnName + ' - started')
   return promise
     .then(res => {
-        console.log(fnName + ' - succeded')
+        console.log(fnName + ' - succeded');
       return Promise.resolve(res.data);
     })
     .catch(err => {

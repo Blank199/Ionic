@@ -1,23 +1,24 @@
 import axios from 'axios';
 import { ItemProps } from './ProductProps';
 import io from 'socket.io-client'; 
-import { authConfig, withLogs } from '../core';
+import { basePhoneUrl, authConfig, withLogs } from '../core';
 
 
-const baseUrl = 'localhost:5000/api/v1';
-const itemUrl = `http://${baseUrl}/products`;
+const basePUrl = `${basePhoneUrl}/api/v1`;
+const phoneUrle = `http://${basePUrl}/products`;
+const localUrl = `http://localhost:5000/api/v1/products`;
 
 export const getItems: (token: string, limit: number, page: number) => Promise<ItemProps[]> = (token, limit, page) => {
-  return withLogs(axios.get(`${itemUrl}/${limit}/${page}`, authConfig(token)), 'getItems');
+  return withLogs(axios.get(`${localUrl}/${limit}/${page}`, authConfig(token)), 'getItems');
 }
 
 export const createItem: (token: string, item: ItemProps) => Promise<ItemProps[]> = (token, item) => {
-  return withLogs(axios.post(itemUrl, item, authConfig(token)), 'createItem');
+  return withLogs(axios.post(localUrl, item, authConfig(token)), 'createItem');
 }
 
 export const updateItem: (token: string, item: ItemProps) => Promise<ItemProps[]> = (token, item) => {
   console.log(item);
-  return withLogs(axios.put(`${itemUrl}`, item, authConfig(token)), 'updateItem');
+  return withLogs(axios.put(`${localUrl}`, item, authConfig(token)), 'updateItem');
 }
 
 interface MessageData {

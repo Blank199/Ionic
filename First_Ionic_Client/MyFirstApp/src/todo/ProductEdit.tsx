@@ -3,7 +3,11 @@ import {
   IonButton,
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
+  IonIcon,
+  IonImg,
   IonInput,
   IonLabel,
   IonLoading,
@@ -14,6 +18,10 @@ import {
 import { ItemContext } from './ProductProvider';
 import { RouteComponentProps } from 'react-router';
 import { ItemProps } from './ProductProps';
+
+import './Product.css';
+import { usePhotoGallery } from './usePhotoGallery';
+import { camera } from 'ionicons/icons';
 
 
 
@@ -27,6 +35,8 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [item, setItem] = useState<ItemProps>();
+  const {takePhoto, currentPhotoName, currentPhotoWebPath, setCurrentPhotoWebPath, getPhotoByName} = usePhotoGallery();
+
   useEffect(() => {
     const routeId = match.params.id || '';
     const item = items?.find(it => it.id?.toString() === routeId);
@@ -36,13 +46,20 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
       setPrice(item.price);
       setStock(item.stock);
     }
+
+    const setWebPath = async () => {
+      if(item && item.imgName)
+      {
+        setCurrentPhotoWebPath(await getPhotoByName(item.imgName));
+      }
+    } 
+
+    setWebPath();
+
   }, [match.params.id, items]);
   const handleSave = () => {
-    let newId: string = '0';
-    if(items?.length){
-      newId = (items?.length + 1).toString()
-    }
-    const editedItem = item ? { ...item, name, price, stock } : {id:newId, name:name, price:price, stock:stock };
+    let newId: string = '-1';
+    const editedItem = item ? { ...item, name, price, stock, imgName:currentPhotoName } : {id:newId, name:name, price:price, stock:stock, imgName:currentPhotoName };
     saveItem && saveItem(editedItem, items || []).then(() => history.goBack());
   };
   return (
@@ -64,6 +81,12 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
         <IonInput value={price} onIonChange={e => setPrice(e.detail.value || '')} />
         <IonLabel>Stock:</IonLabel>
         <IonInput value={stock} onIonChange={e => setStock(e.detail.value || '')} />
+        <IonImg className="img" src = {currentPhotoWebPath}></IonImg>
+        <IonFab vertical="bottom" horizontal="center" slot="fixed">
+          <IonFabButton  onClick={() => takePhoto()}>
+              <IonIcon icon={camera}/>
+          </IonFabButton >
+        </IonFab>
         <IonLoading isOpen={saving} />
         {savingError && (
           <div>{savingError.message || 'Failed to save item'}</div>

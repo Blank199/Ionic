@@ -58,7 +58,7 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
         const index = items.findIndex(it => it.id === item.id);
         
         if (index === -1) {
-          items.splice(0, 0, item);
+          //items.splice(0, 0, item);
         } else {
           items[index] = item;
         }
@@ -77,7 +77,7 @@ interface ItemProviderProps {
 }
 
 export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
-  const noPageProducts = 15; 
+  const noPageProducts = 3; 
   let page = 0;
 
   const { token } = useContext(AuthContext);
@@ -160,7 +160,7 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
       dispatch({ type: SAVE_ITEM_STARTED });
       let savedItem;  
       
-      if(item.id && items && +item.id === items.length + 1){
+      if(item.id && items && + item.id === -1){
         savedItem = await createItem(token, item)
       }
       else{

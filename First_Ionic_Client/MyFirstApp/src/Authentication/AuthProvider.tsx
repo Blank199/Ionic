@@ -34,7 +34,7 @@ let finalState: any = initialState;
 function getState(){
   const {Storage} = Plugins;
   asyncState();
-  
+
   return finalState;
 
   async function asyncState(){
