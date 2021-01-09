@@ -15,7 +15,7 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/react';
-import { add, warning, wifi } from 'ionicons/icons';
+import { add } from 'ionicons/icons';
 import Item from './Product';
 import { ItemContext } from './ProductProvider';
 import { AuthContext } from '../Authentication/AuthProvider';
@@ -69,13 +69,6 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>
-
-        <IonFab vertical="top" horizontal="center" slot="fixed">
-            <IonFabButton disabled={true} color="primary">
-                <IonIcon icon={disableInfiniteScroll ? warning : wifi}></IonIcon>
-            </IonFabButton>
-        </IonFab>
-
       </IonContent>
     </IonPage>
   );

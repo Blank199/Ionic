@@ -4,4 +4,6 @@ export interface ItemProps {
   price: string;
   stock: string;
   imgName?: string|Promise<string>;
+  latitude?: number;
+  longitude?: number;
 }

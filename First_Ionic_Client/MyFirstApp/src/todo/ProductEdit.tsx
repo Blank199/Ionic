@@ -22,6 +22,8 @@ import { ItemProps } from './ProductProps';
 import './Product.css';
 import { usePhotoGallery } from './usePhotoGallery';
 import { camera } from 'ionicons/icons';
+//import { useMyLocation } from './useMyLocation';
+import { MyMap } from './MyMap';
 
 
 
@@ -35,7 +37,12 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [item, setItem] = useState<ItemProps>();
-  const {takePhoto, currentPhotoName, currentPhotoWebPath, setCurrentPhotoWebPath, getPhotoByName} = usePhotoGallery();
+  const [latitude, setLatitude] = useState<number | undefined>(44.87549767121354);
+  const [longitude, setLongitude] = useState<number | undefined>(24.841699598127455);
+  const {takePhoto, currentPhotoName, currentPhotoWebPath, setCurrentPhotoWebPath, getPhotoByName, setCurrentPhotoName} = usePhotoGallery();
+
+  //const myLocation = useMyLocation();
+  // const { latitude: lat, longitude: lng } = myLocation.position?.coords || {}
 
   useEffect(() => {
     const routeId = match.params.id || '';
@@ -45,6 +52,11 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
       setName(item.name);
       setPrice(item.price);
       setStock(item.stock);
+      if(typeof item.imgName === 'string'){
+        setCurrentPhotoName(item.imgName);
+      }
+      setLatitude(item.latitude);
+      setLongitude(item.longitude);
     }
 
     const setWebPath = async () => {
@@ -59,7 +71,7 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   }, [match.params.id, items]);
   const handleSave = () => {
     let newId: string = '-1';
-    const editedItem = item ? { ...item, name, price, stock, imgName:currentPhotoName } : {id:newId, name:name, price:price, stock:stock, imgName:currentPhotoName };
+    const editedItem = item ? { ...item, name, price, stock, imgName:currentPhotoName, latitude:latitude, longitude:longitude } : {id:newId, name:name, price:price, stock:stock, imgName:currentPhotoName, latitude:latitude, longitude:longitude };
     saveItem && saveItem(editedItem, items || []).then(() => history.goBack());
   };
   return (
@@ -82,6 +94,12 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
         <IonLabel>Stock:</IonLabel>
         <IonInput value={stock} onIonChange={e => setStock(e.detail.value || '')} />
         <IonImg className="img" src = {currentPhotoWebPath}></IonImg>
+        <MyMap
+            lat={latitude}
+            lng={longitude}
+            onMapClick={log('onMap')}
+            onMarkerClick={log('onMarker')}
+        />
         <IonFab vertical="bottom" horizontal="center" slot="fixed">
           <IonFabButton  onClick={() => takePhoto()}>
               <IonIcon icon={camera}/>
@@ -94,6 +112,13 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
       </IonContent>
     </IonPage>
   );
+  function log(source: string) {
+    return (l: any) => {
+        console.log(source,l.latLng.lat(), l.latLng.lng());
+        setLatitude(l.latLng.lat());
+        setLongitude(l.latLng.lng());
+        return l};
+}
 };
 
 export default ItemEdit;

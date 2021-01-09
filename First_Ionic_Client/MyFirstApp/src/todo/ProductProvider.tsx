@@ -97,8 +97,18 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
 
   async function getNextPage($event: CustomEvent<void>, products?: ItemProps[]) {
     page += 1;
+    const noExcesItems = products!.length % noPageProducts
+    if(noExcesItems !== 0)
+    {
+      page -= 1;
+      products?.splice(-noExcesItems,noExcesItems);
+    }
     dispatch({ type: FETCH_ITEMS_STARTED });
     let new_products: ItemProps[] = await getItems(token, noPageProducts, page);
+
+    if(new_products.length === 0){
+      page -= 1;
+    }
 
     if(products){
       const result_products = [...products, ...new_products];
